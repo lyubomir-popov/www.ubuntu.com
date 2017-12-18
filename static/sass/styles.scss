@@ -247,7 +247,8 @@ select {
   h5,
   h6,
   p {
-    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
@@ -259,7 +260,8 @@ h5,
 h6,
 p {
   &.u-align--center {
-    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
