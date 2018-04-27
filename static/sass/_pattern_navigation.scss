@@ -1,19 +1,100 @@
 @mixin ubuntu-p-navigation {
+  $ubuntu-logo-svg-width: 81 * $px; // width in rems
+  $circle-of-friends-compensation: .25rem; // padding compensation to create visually equal margins;
+  $ubuntu-logo-width--desktop: $ubuntu-logo-svg-width + 2 * $grid-margin-width;
+  $ubuntu-logo-width--mobile: $ubuntu-logo-svg-width + 2 * $sph-intra;
+
+  %logo-padding {
+    @media only screen and (max-width: $breakpoint-navigation-threshold) {
+      padding-left: $grid-margin-width;
+      padding-right: $grid-margin-width - $circle-of-friends-compensation;
+    }
+
+    @media only screen and (min-width: $breakpoint-navigation-threshold) {
+      padding-left: $sph-intra;
+      padding-right: $sph-intra - $circle-of-friends-compensation;
+    }
+  }
+
   html {
     overflow-x: hidden !important; // prevent horizontal overflow full width breakout
   }
 
   .p-navigation {
-    border-bottom: 0;
+    flex-direction: column;
+    z-index: 3;
 
-    &__wrapper {
-      display: flex;
+    &__dropdown-link {
+      @extend .p-navigation__link;
+      position: relative;
+
+      &::after {
+        @include vf-icon-chevron(vf-url-friendly-color($color-mid-light));
+        background-repeat: no-repeat;
+        background-size: .75rem;
+        background-position: top 52% right 50%;
+        content: "";
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 2rem;
+      }
+
+      &.is-selected {
+        &::after {
+          transform: rotate(180deg);
+        }
+
+        .p-navigation__link-anchor {
+          color: $color-dark;
+
+          &::after {
+            height: 100%;
+            z-index: -1;
+            background-color: $color-x-light;
+          }
+        }
+      }
+    }
+
+    &__image {
+      max-height: 1.5rem;
+      max-width: $ubuntu-logo-svg-width;
+    }
+
+    & &__logo {
+      background: $color-brand;
+      margin: 0;
+
+      @media only screen and (max-width: $breakpoint-navigation-threshold) {
+        padding-left: $grid-margin-width;
+        padding-right: $grid-margin-width - $circle-of-friends-compensation;
+      }
+
+      @media only screen and (min-width: $breakpoint-navigation-threshold) {
+        padding-left: $sph-intra;
+        padding-right: $sph-intra - $circle-of-friends-compensation;
+      }
+    }
+
+    & &__nav {
+      border-bottom: 0;
+      width: 100%;
+    }
+
+    & &__link-anchor {
+      color: $color-light;
+      padding-right: 2rem;
+    }
+
+    & &__row {
+      padding-left: $grid-margin-width;
+      padding-right: $grid-margin-width;
     }
 
     &__search {
       align-items: center;
-      background: $color-navigation-background;
-      border-bottom: 1px solid $color-mid-light;
       display: inline-flex;
       flex-grow: 1;
       margin: 0;
@@ -36,31 +117,54 @@
       }
     }
 
-    &__secondary {
+    &--secondary {
       background-color: $color-light;
-      border-bottom: 1px solid $color-mid-light;
       display: flex;
       margin-top: 0;
       position: relative;
       width: 100%;
-      z-index: 2;
+      z-index: 1;
 
-      > a {
-        text-decoration: none;
+      &__banner {
+        display: inline-block;
+        float: left;
+        background-color: transparentize($color-brand, .05);
+      }
+
+      &__logo {
+        @extend %paragraph;
+        @extend %logo-padding;
+        color: $color-x-light;
+        margin-bottom: $sp-unit * 2 - map-get($nudges, nudge--p);
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        @media only screen and (max-width: $breakpoint-navigation-threshold) {
+          min-width: $ubuntu-logo-svg-width + 2 * $grid-margin-width - $circle-of-friends-compensation;
+          padding-left: $grid-margin-width;
+          padding-right: $grid-margin-width - $circle-of-friends-compensation;
+        }
+
+        @media only screen and (min-width: $breakpoint-navigation-threshold) {
+          min-width: $ubuntu-logo-svg-width + 2 * $sph-intra - $circle-of-friends-compensation;
+          padding-left: $sph-intra;
+          padding-right: $sph-intra - $circle-of-friends-compensation;
+        }
       }
 
       .breadcrumbs {
-        &__secondary {
+        &--secondary {
           @extend .p-inline-list;
-          align-items: center;
           display: flex;
           flex-wrap: wrap;
-          margin: 0 0 0 1.25em;
+          margin-bottom: 0;
           width: auto;
         }
 
         &__tertiary {
-          @extend .breadcrumbs__secondary;
+          @extend .breadcrumbs--secondary;
           margin-left: 1.75em;
           position: relative;
 
@@ -76,163 +180,106 @@
         }
 
         &__item {
-          @extend .p-inline-list__item;
           color: $color-dark;
           display: inline-flex;
-          font-size: .875rem;
-          margin-top: 0;
+          list-style: none;
 
-          .p-link--active {
+        }
+
+        &__link {
+          font-size: 1rem / pow($ms-ratio, 1); //XXX: move font-sizes to map in vanilla so it can be changed globally
+          line-height: map-get($line-heights, small);
+          padding-bottom: map-get($sp-after, small) + map-get($line-heights, default-text) - map-get($line-heights, small) - map-get($nudges, nudge--small);
+          padding-left: $spv-intra--expanded;
+          padding-right: $spv-intra--expanded;
+          padding-top: $spv-intra + map-get($nudges, nudge--small);
+
+          &.p-link--active {
             color: $color-brand;
           }
         }
       }
     }
-
-    &__secondary-banner {
-      background: $color-brand;
-      color: $color-x-light;
-      font-size: 1.25rem;
-      line-height: 1.6;
-      padding: 0 .25rem 0 1.25rem;
-      min-height: 2.25rem;
-      width: 10rem;
-    }
-
-    .p-navigation {
-      &__banner {
-        z-index: 2;
-      }
-
-      &__logo {
-        background: $color-brand;
-        margin: 0;
-        height: 3rem;
-        padding: 0 1.25rem;
-      }
-
-      &__nav {
-        border-bottom: 0;
-        width: 100%;
-        z-index: 2;
-      }
-
-      &__links {
-
-        &:last-of-type {
-          border-right: 1px solid $color-mid-dark;
-        }
-
-        > .p-navigation__dropdown-link {
-          @extend .p-navigation__link;
-          background-color: $color-navigation-background;
-          border-left: 1px solid $color-mid-dark;
-          position: relative;
-
-          &:first-of-type {
-            border-left: 0;
-          }
-
-          &:hover {
-            background-color: $color-mid-dark;
-          }
-
-          &::after {
-            @include vf-icon-chevron(vf-url-friendly-color($color-mid-light));
-            background-repeat: no-repeat;
-            background-size: 100%;
-            content: "";
-            height: .25rem;
-            position: absolute;
-            right: .75em;
-            top: 1.5em;
-            width: .65rem;
-          }
-
-          > a {
-            border-bottom: 1px solid $color-mid-light;
-            color: $color-light;
-            font-size: 1.125rem;
-            padding: .675rem 1.75rem .575rem 1.25rem;
-          }
-
-          &.is-selected {
-            background-color: $color-mid-dark;
-            color: $color-mid-light;
-            &::after {
-              transform: rotate(180deg);
-            }
-
-            > a {
-              border-bottom-color: transparent;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .navigation-col {
-    // on dropdowns - the nav lists
-
-    h4 {
-      font-size: $sp-medium;
-      font-weight: 400;
-      margin-top: $sp-medium;
-    }
-
-    p {
-      font-size: $sp-medium-small;
-    }
-
-    ul {
-      margin-top: $sp-x-small;
-
-      > .p-list__item {
-        font-size: $sp-medium-small;
-        margin-top: $sp-xx-small;
-      }
-    }
-  }
-
-  .resource-col {
-    background-color: $color-light;
-    padding: 1rem;
-
-    h4 {
-      margin-top: $sp-medium;
-    }
-
-    p {
-      font-size: $sp-medium-small;
-    }
-
-    .p-list__item {
-      font-size: $sp-medium-small;
-      margin-top: 0;
-    }
   }
 
   .dropdown-window {
-    @extend .p-strip;
-    display: none;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
 
     @media only screen and (min-width: $breakpoint-navigation-threshold) {
-      display: block;
-      background-color: $color-x-light;
-      border-bottom: 1px solid $color-mid-light;
-      box-shadow: 0 1px 5px 1px transparentize($color-dark, .8);
-      color: $color-dark;
-      line-height: $sp-medium-large;
-      padding: 2.5rem 0;
-      position: relative;
-      transition: all .25s cubic-bezier(.215, .61, .355, 1);
-      z-index: 1;
+      box-shadow: 0 1px 32px 1px transparentize($color-dark, .8);
+      transition: all .25s; // cubic-bezier(.215, .61, .355, 1);
+      z-index: 2;
+    }
 
-      .row {
-        margin-top: 0;
+//fade - commented out as it is choppy due to the js
+    // &::before {
+    //   background: transparentize($color-x-dark, .85);
+    //   bottom: 0;
+    //   content: '';
+    //   left: 0;
+    //   position: fixed;
+    //   top: 0;
+    //   right: 0;
+    //   z-index: -1;
+    // }
+
+    a {
+      color: $color-link;
+      text-decoration: none;
+
+      &:visited,
+      &:hover,
+      &:focus {
+        color: $color-link;
       }
     }
+
+    .row {
+      display: block;
+      padding-left: $grid-margin-width;
+      padding-right: $grid-margin-width;
+    }
+
+    hr {
+      margin-bottom: $spv-inter--condensed - $px;
+    }
+
+    &__content {
+      background-color: $color-x-light;
+      padding-bottom: $spv-inter--shallow-scaleable;
+    }
+
+    &__summary-strip {
+      @media only screen and (max-width: $breakpoint-large) {
+        padding-bottom: $spv-inter--shallow-scaleable * .5;
+        padding-top: $spv-inter--condensed;
+      }
+
+      @media only screen and (min-width: $breakpoint-large) {
+        padding-bottom: $spv-intra;
+        padding-top: $spv-inter--condensed;
+      }
+    }
+
+    &__summary {
+      @include p-max-width--long;
+        margin-bottom: $sp-unit * 2 - map-get($nudges, nudge--p);
+    }
+  }
+
+  .p-heading--navigation {
+    @extend %vf-heading-4;
+    margin-bottom: $sp-unit - map-get($nudges, nudge--h4);
+  }
+
+  .p-p--navigation,
+  .dropdown-window .p-list__item,
+  .dropdown-window .p-inline-list__item {
+    @extend %small-text;
+    list-style-type: none;
+    margin-bottom: map-get($line-heights, default-text) - map-get($line-heights, small) - map-get($nudges, nudge--small);
   }
 
   .fade-animation {
@@ -249,7 +296,34 @@
   }
 }
 
-.u-visible-nav {
-  padding-top: $sp-large;
-  padding-bottom: $sp-large;
+
+// XXX: move to vanilla
+.bg--light {
+  background-color: $color-light;
+  color: $color-dark;
+}
+
+.p-list--navigation {
+  margin-left: 0;
+  padding-left: 0;
+  margin-bottom: $spv-inter--condensed-scaleable;
+}
+
+.default-text {
+  @extend %default-text;
+}
+
+
+// XXX: move these to vanilla
+h1,
+.p-heading--one {
+  & + h2,
+  & + .p-heading--two {
+    margin-top: -2.5rem;
+  }
+}
+
+h2,
+.p-heading--two {
+  line-height: 3rem;
 }
