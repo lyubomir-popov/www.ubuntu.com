@@ -274,20 +274,6 @@ $nudge--small: .55rem;
       list-style-type: none;
     }
 
-    & .p-list__item {
-      // list-style-type: none;
-      padding-left: $sph-inter--expanded;
-      padding-left: .375rem;
-
-      position: relative;
-
-      // &::before {
-      //   content: '»';
-      //   position: absolute;
-      //   left: 0;
-      // }
-    }
-
     &__summary-strip {
       @media only screen and (max-width: $breakpoint-large) {
         // padding-bottom: $spv-inter--shallow-scaleable * .5;
@@ -309,7 +295,7 @@ $nudge--small: .55rem;
   }
 
   .navigation-col {
-    padding-right: $sph-inter--expanded;
+    // padding-right: $sph-inter--expanded;
   }
 
   .p-heading--navigation {
@@ -369,9 +355,34 @@ $nudge--small: .55rem;
 .p-text-list--small {
   @extend %small-text-fixed;
   margin-left: 0;
-  // padding-left: 0;
+  padding-left: 0;
   // margin-bottom: $spv-inter--scaleable + map-get($line-heights, default-text) - $line-height--small-compact - $nudge--small-compact;
   margin-bottom: $spv-inter--condensed-scaleable + map-get($sp-after, small) + map-get($line-heights, default-text) - map-get($line-heights, small) - $nudge--small;
+
+  & .p-list__item {
+    list-style-type: none;
+    padding-left: 0;
+    position: relative;
+
+    // &::before {
+    //   content: '»';
+    //   position: absolute;
+    //   left: 0;
+    // }
+  }
+  &.bordered {
+    margin-bottom: $spv-inter--condensed-scaleable - map-get($nudges, nudge--p);
+
+    & .p-list__item {
+      @extend %pseudo-border--top;
+      line-height: map-get($line-heights, default-text);
+      margin-bottom: 0;
+
+      &::after {
+        background-color: $color-rule--light;
+      }
+    }
+  }
 }
 
 .default-text {
