@@ -1,3 +1,29 @@
+$line-height--small-compact: 1.125rem;
+$nudge--small-compact: .5rem;
+$nudge--small: .55rem;
+
+%small-text-fixed {
+  font-size: 1rem / pow($ms-ratio, 1);
+  line-height: map-get($line-heights, small);
+  margin-bottom: map-get($sp-after, small) + map-get($line-heights, default-text) - map-get($line-heights, small) - $nudge--small;
+  padding-top: $nudge--small;
+}
+
+%small-compact-text {
+  display: inline-block;
+  font-size: 1rem / pow($ms-ratio, 1);
+  line-height: $line-height--small-compact;
+  margin-bottom: map-get($line-heights, default-text) - $line-height--small-compact - $nudge--small-compact;
+  padding-top: $nudge--small-compact;
+}
+
+%smallest-text {
+  font-size: 1rem / pow($ms-ratio, 2);
+  line-height: 1rem;
+  margin-bottom: .25rem;
+  padding-top: 0.25rem;
+}
+
 @mixin ubuntu-p-navigation {
   $ubuntu-logo-svg-width: 81 * $px; // width in rems
   $circle-of-friends-compensation: .25rem; // padding compensation to create visually equal margins;
@@ -16,9 +42,9 @@
     }
   }
 
-  html {
-    overflow-x: hidden !important; // prevent horizontal overflow full width breakout
-  }
+  // html {
+  //   overflow-x: hidden !important; // prevent horizontal overflow full width breakout
+  // }
 
   .p-navigation {
     flex-direction: column;
@@ -35,6 +61,7 @@
         background-position: top 52% right 50%;
         content: "";
         height: 100%;
+        pointer-events: none;
         position: absolute;
         right: 0;
         top: 0;
@@ -44,15 +71,22 @@
       &.is-selected {
         &::after {
           transform: rotate(180deg);
+          @include vf-icon-chevron(vf-url-friendly-color($color-dark));
         }
 
         .p-navigation__link-anchor {
+          background-color: $color-x-light;
           color: $color-dark;
 
-          &::after {
-            height: 100%;
-            z-index: -1;
+          &:hover {
             background-color: $color-x-light;
+          }
+
+          &::after {
+            // height: 100%;
+            // z-index: -1;
+            // background-color: $color-x-light;
+            background-color: transparent;
           }
         }
       }
@@ -101,9 +135,8 @@
 
       .p-search-box {
         @media only screen and (min-width: $breakpoint-navigation-threshold) {
-          height: 2rem;
-          margin: 0 1rem 0 auto;
-          width: 12.5rem;
+          margin-right: 0;
+          max-width: 12rem;
         }
 
         &__button {
@@ -113,6 +146,10 @@
 
         &__reset {
           right: 2rem;
+        }
+
+        &__input {
+          border-radius: $border-radius;
         }
       }
     }
@@ -129,6 +166,10 @@
         display: inline-block;
         float: left;
         background-color: transparentize($color-brand, .05);
+
+        &:hover {
+          text-decoration: none;
+        }
       }
 
       &__logo {
@@ -137,9 +178,6 @@
         color: $color-x-light;
         margin-bottom: $sp-unit * 2 - map-get($nudges, nudge--p);
 
-        &:hover {
-          text-decoration: none;
-        }
 
         @media only screen and (max-width: $breakpoint-navigation-threshold) {
           min-width: $ubuntu-logo-svg-width + 2 * $grid-margin-width - $circle-of-friends-compensation;
@@ -189,10 +227,10 @@
         &__link {
           font-size: 1rem / pow($ms-ratio, 1); //XXX: move font-sizes to map in vanilla so it can be changed globally
           line-height: map-get($line-heights, small);
-          padding-bottom: map-get($sp-after, small) + map-get($line-heights, default-text) - map-get($line-heights, small) - map-get($nudges, nudge--small);
+          padding-bottom: map-get($sp-after, small) + map-get($line-heights, default-text) - map-get($line-heights, small) - $nudge--small;
           padding-left: $spv-intra--expanded;
           padding-right: $spv-intra--expanded;
-          padding-top: $spv-intra + map-get($nudges, nudge--small);
+          padding-top: $nudge--small;
 
           &.p-link--active {
             color: $color-brand;
@@ -213,27 +251,8 @@
       z-index: 2;
     }
 
-//fade - commented out as it is choppy due to the js
-    // &::before {
-    //   background: transparentize($color-x-dark, .85);
-    //   bottom: 0;
-    //   content: '';
-    //   left: 0;
-    //   position: fixed;
-    //   top: 0;
-    //   right: 0;
-    //   z-index: -1;
-    // }
-
     a {
-      color: $color-link;
       text-decoration: none;
-
-      &:visited,
-      &:hover,
-      &:focus {
-        color: $color-link;
-      }
     }
 
     .row {
@@ -251,35 +270,72 @@
       padding-bottom: $spv-inter--shallow-scaleable;
     }
 
+    & .p-inline-list__item {
+      list-style-type: none;
+    }
+
+    & .p-list__item {
+      // list-style-type: none;
+      padding-left: $sph-inter--expanded;
+      padding-left: .375rem;
+
+      position: relative;
+
+      // &::before {
+      //   content: '»';
+      //   position: absolute;
+      //   left: 0;
+      // }
+    }
+
     &__summary-strip {
       @media only screen and (max-width: $breakpoint-large) {
-        padding-bottom: $spv-inter--shallow-scaleable * .5;
+        // padding-bottom: $spv-inter--shallow-scaleable * .5;
         padding-top: $spv-inter--condensed;
       }
 
       @media only screen and (min-width: $breakpoint-large) {
-        padding-bottom: $spv-intra;
-        padding-top: $spv-inter--condensed;
+        // padding-bottom: $spv-intra;
+        padding-top: $sp-unit;
       }
     }
 
     &__summary {
       @include p-max-width--long;
-        margin-bottom: $sp-unit * 2 - map-get($nudges, nudge--p);
+      @extend %small-text-fixed;
+      display: inline-block;
+      margin-bottom: $sp-unit * 2.5 + map-get($line-heights, default-text) - map-get($line-heights, small) - $nudge--small;
     }
+  }
+
+  .navigation-col {
+    padding-right: $sph-inter--expanded;
   }
 
   .p-heading--navigation {
     @extend %vf-heading-4;
-    margin-bottom: $sp-unit - map-get($nudges, nudge--h4);
+    margin-bottom: 0 * $sp-unit - map-get($nudges, nudge--h4);
+
+    // @extend %vf-heading-5;
+    // font-size: 1rem;
+    // margin-bottom: $sp-unit * 2 - map-get($nudges, nudge--p);
+
+    // @extend %small-compact-text;
+    // font-weight: 400;
   }
 
-  .p-p--navigation,
-  .dropdown-window .p-list__item,
+  .p-small--compact {
+    @extend %small-compact-text;
+    // margin-bottom: map-get($line-heights, default-text) - $line-height--small-compact - $nudge--small-compact;
+  }
+
+  .p-small {
+    @extend %small-text-fixed;
+    // margin-bottom: map-get($line-heights, default-text) - map-get($line-heights, small) - $nudge--small;
+  }
+
   .dropdown-window .p-inline-list__item {
-    @extend %small-text;
-    list-style-type: none;
-    margin-bottom: map-get($line-heights, default-text) - map-get($line-heights, small) - map-get($nudges, nudge--small);
+    @extend %small-compact-text;
   }
 
   .fade-animation {
@@ -303,10 +359,19 @@
   color: $color-dark;
 }
 
-.p-list--navigation {
+.p-text-list--small-compact {
+  @extend %small-compact-text;
   margin-left: 0;
   padding-left: 0;
-  margin-bottom: $spv-inter--condensed-scaleable;
+  margin-bottom: $spv-inter--condensed-scaleable + map-get($line-heights, default-text) - $line-height--small-compact - $nudge--small-compact;
+}
+
+.p-text-list--small {
+  @extend %small-text-fixed;
+  margin-left: 0;
+  // padding-left: 0;
+  // margin-bottom: $spv-inter--scaleable + map-get($line-heights, default-text) - $line-height--small-compact - $nudge--small-compact;
+  margin-bottom: $spv-inter--condensed-scaleable + map-get($sp-after, small) + map-get($line-heights, default-text) - map-get($line-heights, small) - $nudge--small;
 }
 
 .default-text {
@@ -327,3 +392,37 @@ h2,
 .p-heading--two {
   line-height: 3rem;
 }
+
+.p-card--navigation {
+  @extend %p-card;
+  background-color: $color-light;
+  border: 0;
+  border-radius: $border-radius;
+}
+
+.dropdown-window .p-muted-heading {
+  @extend %smallest-text;
+}
+
+
+// .p-list__item {
+//   z-index: 1;
+//   &:hover {
+//     @extend %pseudo-border--top;
+//     &::after {
+//       background-color: $color-light;
+//       border-radius: + $border-radius;
+//       height: 100%;
+//       left: -.25rem;
+//       z-index: -1;
+//     }
+//   }
+
+//   & + .p-list__item {
+//     @extend %pseudo-border--top;
+
+//     &::after {
+//       background-color: $color-light;
+//     }
+//   }
+// }
